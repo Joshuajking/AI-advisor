@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Next.js
+.next/
+out/
+
+# Curriculum (HTML for Kajabi - not tracked)
+curriculum/
+
+# Misc
+.DS_Store
+*.log

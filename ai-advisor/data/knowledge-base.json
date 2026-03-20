@@ -1,0 +1,32 @@
+[
+  {
+    "id": "prompting-basics",
+    "topic": "Prompt Engineering",
+    "keywords": ["prompts", "prompting", "prompt engineering", "system prompt", "instructions"],
+    "content": "The key to effective prompting is being specific about what you want. Start with a clear role (\"You are a helpful coding assistant\"), provide context about the task, give examples of desired output format, and specify any constraints. Avoid vague instructions - instead of \"be helpful\", say \"provide step-by-step explanations with code examples\"."
+  },
+  {
+    "id": "rag-intro",
+    "topic": "RAG Basics",
+    "keywords": ["rag", "retrieval", "augmented", "generation", "context", "knowledge base"],
+    "content": "RAG (Retrieval-Augmented Generation) combines search with generation. Instead of relying solely on the model's training data, you retrieve relevant documents and inject them into the prompt as context. This gives the model access to specific, up-to-date, or proprietary information. Start simple with keyword matching, then graduate to embeddings and vector databases for production."
+  },
+  {
+    "id": "agents-overview",
+    "topic": "AI Agents",
+    "keywords": ["agents", "tools", "function calling", "actions", "autonomous"],
+    "content": "AI agents extend LLMs with the ability to take actions. The model decides when to use tools based on the user's request. Common patterns include: ReAct (Reason + Act), where the model thinks through its approach before acting; tool chaining, where multiple tools are used in sequence; and planning, where the model breaks down complex tasks into steps."
+  },
+  {
+    "id": "api-best-practices",
+    "topic": "LLM API Best Practices",
+    "keywords": ["api", "rate limits", "errors", "streaming", "tokens"],
+    "content": "When working with LLM APIs: 1) Always handle errors gracefully - APIs can fail or rate limit you. 2) Use streaming for better UX on long responses. 3) Monitor token usage to control costs. 4) Cache responses when appropriate. 5) Use the smallest model that works for your use case - it's faster and cheaper."
+  },
+  {
+    "id": "gemini-tips",
+    "topic": "Gemini API",
+    "keywords": ["gemini", "google", "api key", "models", "flash", "pro"],
+    "content": "Gemini offers several models: gemini-1.5-flash is fast and cost-effective for most tasks; gemini-1.5-pro is more capable for complex reasoning. The free tier is generous for learning and prototyping. Key features include multimodal support (text, images, video) and large context windows. Get your API key at ai.google.dev."
+  }
+]
