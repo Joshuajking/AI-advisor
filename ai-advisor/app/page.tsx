@@ -1,84 +1,71 @@
 "use client";
 
 import { useState } from "react";
-import ChatInterface from "@/components/ChatInterface";
-
-export type Message = {
-  role: "user" | "assistant";
-  content: string;
-};
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [input, setInput] = useState("");
+  const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Change this to test different endpoints:
-  // "/api/chat"    - Day 1: Basic LLM call
-  // "/api/advisor" - Day 2: System prompts
-  // "/api/rag"     - Day 3: RAG with context
-  // "/api/agent"   - Day 4: Agent with tools
-  const API_ENDPOINT = "/api/chat";
-
-  const sendMessage = async (content: string) => {
-    const userMessage: Message = { role: "user", content };
-    setMessages((prev) => [...prev, userMessage]);
-    setIsLoading(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
 
     try {
-      const response = await fetch(API_ENDPOINT, {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: content,
-          history: messages,
-        }),
+        body: JSON.stringify({ message: input }),
       });
 
-      const data = await response.json();
-
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      const assistantMessage: Message = {
-        role: "assistant",
-        content: data.response,
-      };
-      setMessages((prev) => [...prev, assistantMessage]);
+      const data = await res.json();
+      setResponse(data.response || "Error");
     } catch (error) {
-      console.error("Error:", error);
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Sorry, something went wrong. Please try again.",
-        },
-      ]);
+      setResponse("Error: " + error);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        background: "#f5f5f5",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        padding: "2rem",
-      }}
-    >
-      <h1 style={{ marginBottom: "1rem" }}>AI Advisor</h1>
-      <p style={{ color: "#666", marginBottom: "2rem" }}>
-        Using: <code>{API_ENDPOINT}</code>
-      </p>
-      <ChatInterface
-        messages={messages}
-        onSendMessage={sendMessage}
-        isLoading={isLoading}
-      />
-    </main>
+    <div style={{ padding: "2rem", maxWidth: "600px", margin: "0 auto" }}>
+      <h1>AI Advisor</h1>
+
+      <form onSubmit={handleSubmit} style={{ marginTop: "2rem" }}>
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Ask something..."
+          style={{
+            width: "100%",
+            padding: "0.5rem",
+            fontSize: "1rem",
+            marginBottom: "1rem",
+          }}
+        />
+        <button
+          type="submit"
+          disabled={loading}
+          style={{ padding: "0.5rem 1rem" }}
+        >
+          {loading ? "Loading..." : "Send"}
+        </button>
+      </form>
+
+      {response && (
+        <div
+          style={{
+            marginTop: "2rem",
+            padding: "1rem",
+            background: "#f0f0f0",
+            borderRadius: "8px",
+          }}
+        >
+          <strong>Response:</strong>
+          <p style={{ marginTop: "0.5rem" }}>{response}</p>
+        </div>
+      )}
+    </div>
   );
 }

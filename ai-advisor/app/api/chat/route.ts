@@ -1,24 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateText } from "@/lib/gemini";
 
-// Day 1: Basic LLM API call
-// This is the simplest possible integration - just send a message and get a response
+// Day 1: Your First AI API Call
+// TODO: Import Gemini SDK
+// TODO: Initialize the model
 
 export async function POST(request: NextRequest) {
   try {
     const { message } = await request.json();
 
-    if (!message) {
-      return NextResponse.json(
-        { error: "Message is required" },
-        { status: 400 }
-      );
-    }
+    // TODO: Send message to Gemini API
+    // TODO: Get the response text
+    // TODO: Return it
 
-    // Make the API call to Gemini
-    const response = await generateText(message);
-
-    return NextResponse.json({ response });
+    return NextResponse.json({
+      response: "TODO: Replace with actual AI response",
+    });
   } catch (error) {
     console.error("Chat API error:", error);
     return NextResponse.json(
