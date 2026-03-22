@@ -1,5 +1,1 @@
-# YouTube Transcript Downloader dependencies
 youtube-transcript-api>=0.6.0
-
-# Only needed for --channel-id support
-google-api-python-client>=2.0.0
