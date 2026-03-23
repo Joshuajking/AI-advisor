@@ -185,126 +185,140 @@ Answer using the provided context.`;
 
 ---
 
-## Day 4: AI Agents with Tools
+## Day 4: Downloading YouTube Transcripts
 
-**Goal**: Enable AI to take actions
+**Goal**: Add real-world data to your RAG system using YouTube transcripts
 
 ### What They'll Build
-Agent that can use tools like searching knowledge, analyzing code, or suggesting resources.
+A transcript downloading workflow using Google Colab that fetches YouTube video transcripts and injects them into the AI advisor system.
 
 ### Key Concepts
-- What agents are
-- Tool/function definitions
-- Routing logic (which tool to use)
-- Combining tools with LLM reasoning
+- Using Google Colab to run Python scripts
+- YouTube Transcript API
+- Context window limitations
+- Selective data injection based on user queries
+- Information architecture for RAG
 
 ### Implementation
-**File**: `app/api/agent/route.ts`
+
+**Google Colab Script**: `scripts/download_transcripts_colab.py`
+
+```python
+from youtube_transcript_api import YouTubeTranscriptApi
+
+def download_transcript(video_id, languages=['en']):
+    api = YouTubeTranscriptApi()
+    transcript = api.fetch(video_id, languages=languages)
+    snippets = transcript.snippets
+    full_text = " ".join(s.text for s in snippets)
+    return {
+        "video_id": video_id,
+        "text": full_text,
+        "char_count": len(full_text)
+    }
+
+VIDEO_IDS = ["X6AR2RMB5tE"]  # Add your video IDs
+for vid in VIDEO_IDS:
+    result = download_transcript(vid)
+    # Save to .txt and .json files
+```
+
+**API Route Update**: `app/api/chat/route.ts`
 
 ```typescript
-// 1. Define tools
-const tools = {
-  searchKnowledge: (query: string) => {
-    // Search and return knowledge base results
-  },
-  analyzeCode: (code: string) => {
-    // Mock code analysis
-    return "Analysis: Consider adding error handling...";
-  },
-  suggestResources: (topic: string) => {
-    // Return curated learning resources
-  }
-};
+import fs from "fs";
 
-// 2. Simple routing (keyword-based for learning)
-function selectTool(message: string) {
-  if (message.includes("search") || message.includes("what is")) {
-    return "searchKnowledge";
+// Check if user is asking about a specific advisor
+function getTranscriptForMessage(message: string): string {
+  const messageLower = message.toLowerCase();
+
+  if (messageLower.includes("theo")) {
+    const path = "data/transcripts/theo.txt";
+    if (fs.existsSync(path)) {
+      return fs.readFileSync(path, "utf-8");
+    }
   }
-  if (message.includes("analyze") || message.includes("review")) {
-    return "analyzeCode";
-  }
-  if (message.includes("learn") || message.includes("resources")) {
-    return "suggestResources";
-  }
-  return null;
+  return "";
 }
 
-// 3. Execute tool and add results to prompt
-const tool = selectTool(message);
-const toolResult = tool ? tools[tool](message) : null;
-
-const prompt = toolResult
-  ? `[Tool: ${tool}]\n[Result: ${toolResult}]\n\nUser: ${message}`
-  : message;
+// In POST handler:
+const transcript = getTranscriptForMessage(message);
+const systemPrompt = `...
+${transcript ? `Here is a transcript from the relevant expert:\n${transcript}` : ""}
+...`;
 ```
 
 ### Learning Outcomes
-- How agents extend LLMs with actions
-- Tool selection patterns
-- Difference between simple routing and function calling
-- Agent architecture patterns
+- How to extract data from YouTube videos
+- Context window management strategies
+- Selective retrieval based on user intent
+- Why vector databases are needed for scale
 
 ### Exercises
-- Add new tools
-- Improve tool selection logic
-- Chain multiple tools together
+- Download transcripts from your favorite tech YouTubers
+- Add multiple creators to your advisory board
+- Organize transcripts by topic
+- Improve the transcript selection logic
 
 ---
 
-## Day 5: Production Concepts & What's Next
+## Day 5: Real Product Demo & What's Next
 
-**Goal**: Understand what changes for production
+**Goal**: See how these concepts scale to real products + career opportunity
 
 ### Topics Covered
 
-#### What We Simplified
-1. **Keyword Search → Vector Search**
-   - Embeddings and semantic similarity
-   - Vector databases (Pinecone, Weaviate)
+#### Recap: What You Built
+- Day 1: LLM API calls (text in, text out)
+- Day 2: System prompts to control behavior
+- Day 3: RAG with knowledge base
+- Day 4: Real data with YouTube transcripts
 
-2. **Flat File → Real Database**
-   - Scaling beyond JSON files
-   - Ingestion pipelines
+Key insight: **It's just software development. It's just a new type of API.**
 
-3. **Keyword Routing → Function Calling**
-   - LLM-native function calling
-   - Structured tool schemas
+#### Real Product Demo: TikTok Creator Finder
+Live demo of a product built for Roc Nation and Universal:
+- Finding TikTok creators to promote songs
+- User inputs: artist, genre, budget, target countries, content type
+- System runs: SQL queries + vector database search + LLM reasoning
+- Output: Curated list of creators with pricing and reach estimates
 
-4. **Single Tool → Multi-Step Agents**
-   - Planning and orchestration
-   - Agent frameworks (LangChain, etc.)
+**The key insight**: This is the same concepts you learned, just at scale:
+- JSON file → Vector database with millions of records
+- Keyword matching → Semantic search with embeddings
+- One transcript → Thousands of creator profiles
+- Same core pattern: Retrieve → Inject → Generate
 
-#### Production Considerations
-- Error handling and retries
-- Rate limiting and cost management
-- Streaming responses
-- Observability and logging
-- Testing and evaluation
+#### The Hiring Gap
+This stuff is hard to hire for:
+- Few developers know RAG properly
+- Even fewer know how to build agents
+- Testing and observability for AI systems is rare
+- This will become table stakes (like knowing React/AWS)
 
-### Architecture Diagram
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│   Frontend  │────▶│   API Layer │────▶│   LLM API   │
-└─────────────┘     └──────┬──────┘     └─────────────┘
-                          │
-              ┌───────────┼───────────┐
-              ▼           ▼           ▼
-        ┌─────────┐ ┌─────────┐ ┌─────────┐
-        │ Vector  │ │ Tools/  │ │ Cache   │
-        │   DB    │ │ Actions │ │         │
-        └─────────┘ └─────────┘ └─────────┘
-```
+#### Two Types of Developers
+1. "How do I prompt better and write more code?"
+2. "How do I build the infrastructure and products that make money?"
 
-### Learning Path Forward
-- Immediate: Add more tools and knowledge
-- Intermediate: Implement streaming and better error handling
-- Advanced: Build production RAG with vector DB
+Knowing AI systems is how you level up.
+
+### What To Do Next
+
+**Share what you've learned:**
+- Tell your team: "Here's how RAG can work for us"
+- Maybe naive RAG is enough for your use case
+- Do a hackathon to socialize these ideas
+
+**Extend your project:**
+- Add more creators
+- Try a different niche
+- Experiment with Chroma (local vector DB)
 
 ### Call to Action
-- 30-Day AI Developer Program details
-- What's covered in deeper course
-- How to keep learning and building
+- Applied AI Accelerator program details
+- Humans in the loop, senior engineers, guest speakers
+- Learn what companies are actually hiring for
+- Contact: brian@parity.io or LinkedIn
 
 ---
 
@@ -313,8 +327,8 @@ const prompt = toolResult
 ### Intentional Simplifications
 - Keyword matching instead of embeddings: Easier to understand retrieval concepts
 - Flat JSON instead of database: Focus on RAG patterns, not infrastructure
-- if/else routing instead of function calling: Clearer cause and effect
-- Single tool per request: Simpler mental model for agents
+- Full transcripts instead of chunking: Simpler mental model before scaling
+- Name-based retrieval instead of semantic search: Clear cause and effect
 
 ### Why This Works
 - Students build a working system in 5 days
@@ -336,7 +350,7 @@ const prompt = toolResult
 - [ ] Understand how LLM APIs work
 - [ ] Be able to write effective system prompts
 - [ ] Know what RAG is and when to use it
-- [ ] Understand agent architecture basics
+- [ ] Know how to add real-world data (transcripts)
 - [ ] Recognize limitations of simple approaches
 - [ ] Have a working AI system they can extend
 - [ ] Know what to learn next
