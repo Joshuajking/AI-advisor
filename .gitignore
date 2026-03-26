@@ -10,9 +10,6 @@ node_modules/
 .next/
 out/
 
-# Curriculum (HTML for Kajabi - not tracked)
-curriculum/
-
 # Misc
 .DS_Store
 *.log

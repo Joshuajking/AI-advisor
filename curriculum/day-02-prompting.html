@@ -1,0 +1,110 @@
+<h1>Day 2: System Prompts</h1>
+
+<p><b>Video:</b></p>
+[VIDEO EMBED PLACEHOLDER]
+
+<h2>What You'll Build</h2>
+
+<p>Today you'll add a system prompt to control your AI's behavior. By the end, your chatbot will stay in its lane instead of answering random questions about wine or the weather.</p>
+
+<h2>The Problem with Day 1</h2>
+
+<p>Yesterday's chatbot works, but it's too helpful. Ask it about the weather in France? It'll tell you. Ask it to solve a linked list problem? Sure! Remember Chipotle's chatbot that was helping people with coding interviews? Yeah, don't be Chipotle.</p>
+
+<p>For a real product, you want the AI to have a specific role and know when to say "that's not my job."</p>
+
+<h2>What's a System Prompt?</h2>
+
+<p>A system prompt is instructions you give the AI before the user's message. Think of it like SRP (Single Responsibility Principle) but for your AI:</p>
+
+<ul>
+<li><b>Who am I?</b> - "You are an AI mentor that understands RAG, agents, and other advanced concepts"</li>
+<li><b>What should I do?</b> - "You only answer questions related to coding"</li>
+<li><b>What should I NOT do?</b> - "If the question is not related to coding, say you're not sure"</li>
+<li><b>Any constraints?</b> - "You only use TypeScript in your code examples"</li>
+</ul>
+
+<h2>Step 1: Add a System Prompt</h2>
+
+<p>Open <b>app/api/chat/route.ts</b> and add a system prompt constant. Put it inside your POST function:</p>
+
+<pre>
+export async function POST(request: NextRequest) {
+  try {
+    const { message } = await request.json();
+
+    const SYSTEM_PROMPT = `
+    You are an AI mentor that understands RAG, agents, and other advanced AI concepts.
+    You only answer questions related to coding.
+    You only use TypeScript in your responses for code examples.
+    If the question is not related to coding, you should say that you are not sure and you should not try to answer it.
+    `;
+
+    const userResponse = await model.generateContent(
+      `${SYSTEM_PROMPT}\n\n User message: ${message}`
+    );
+    const response = userResponse.response.text();
+
+    return NextResponse.json({ response });
+  } catch (error) {
+    // ... error handling
+  }
+}
+</pre>
+
+<p>Key things happening here:</p>
+<ul>
+<li>We define the system prompt as a template string</li>
+<li>We concatenate it with the user message before sending to Gemini</li>
+<li>The format <code>${SYSTEM_PROMPT}\n\n User message: ${message}</code> helps the model understand what's instructions vs. user input</li>
+</ul>
+
+<h2>Step 2: Test It</h2>
+
+<p>Save and try these prompts:</p>
+
+<ul>
+<li>"Tell me about France's wine selection" → Should say it's not sure / can't help</li>
+<li>"Tell me about using Pinecone as a vector database" → Should give a helpful TypeScript-focused answer</li>
+</ul>
+
+<h2>Why This Matters</h2>
+
+<p><b>Guardrails save money.</b> If you're paying for tokens (and you will be on production models), every dumb question costs you. System prompts keep users on track.</p>
+
+<p><b>Guardrails prevent embarrassment.</b> You don't want your roofing company chatbot explaining how to solve dynamic programming problems.</p>
+
+<h2>Prompt Tips</h2>
+
+<h3>Keep It Tight</h3>
+<p>Don't overload your system prompt with too many rules. Cognitive overload degrades responses. Stick to SRP - what's this AI's ONE job?</p>
+
+<h3>Be Specific</h3>
+<p>Bad: "Be helpful"</p>
+<p>Good: "You only answer questions related to coding. You only use TypeScript in code examples."</p>
+
+<h3>Tell It What NOT To Do</h3>
+<p>Explicitly say what's off-limits: "If the question is not related to coding, you should say that you are not sure and should not try to answer it."</p>
+
+<h2>A Note on Chat History</h2>
+
+<p>Right now, every message starts fresh. The AI doesn't remember what you asked 30 seconds ago - like that fish from Finding Nemo.</p>
+
+<p>You CAN add history (Gemini supports <code>startChat()</code> with a history array), but we're keeping it simple for this course. Something to explore on your own if you want.</p>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+<li>System prompts control personality, expertise, and constraints</li>
+<li>Think SRP - what's this AI's single responsibility?</li>
+<li>Explicitly say what the AI should NOT do</li>
+<li>Guardrails save money and prevent embarrassment</li>
+</ul>
+
+<h2>What's Next</h2>
+
+<p>Our AI now stays in its lane, but it only knows what's in its training data. What if you want it to know about specific people's opinions - like what Theo Brown thinks about Node.js?</p>
+
+<p>Tomorrow, we'll add a <b>knowledge base</b> with RAG (Retrieval Augmented Generation) to give our AI access to custom content.</p>
+
+<p>See you on Day 3!</p>

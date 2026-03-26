@@ -1,0 +1,291 @@
+<h1>Day 4: Downloading YouTube Transcripts</h1>
+
+<p><b>Video:</b></p>
+[VIDEO EMBED PLACEHOLDER]
+
+<h2>What You'll Build</h2>
+
+<p>Today you'll learn how to download YouTube transcripts using Google Colab and inject them into your AI advisor. This extends your RAG system with <b>real data</b> from YouTube creators - giving your AI advisor access to knowledge that isn't in its training data.</p>
+
+<h2>Why Transcripts?</h2>
+
+<p>Large language models have a <b>training cutoff date</b> - typically about 2 years in the past. They don't know:</p>
+
+<ul>
+<li>What Theo said about Node.js last week</li>
+<li>ThePrimeagen's latest thoughts on Vim</li>
+<li>Any content published after their training cutoff</li>
+</ul>
+
+<p>By downloading transcripts and feeding them to our AI, we can give it access to current knowledge from any YouTube creator.</p>
+
+<h2>Understanding RAG at a Deeper Level</h2>
+
+<p>Before we dive in, let's understand what we're building towards. In production RAG systems:</p>
+
+<ol>
+<li><b>Chunking:</b> Large documents are broken into smaller pieces</li>
+<li><b>Vectorization:</b> Each chunk is converted to a vector (an array of 512-3072 numbers) that captures its meaning</li>
+<li><b>Vector Database:</b> These vectors are stored in a specialized database (like Pinecone)</li>
+<li><b>Semantic Search:</b> When a user asks a question, their query is vectorized and compared to stored vectors to find relevant chunks</li>
+</ol>
+
+<p>Today we're doing a <b>simpler version</b>: downloading full transcripts and injecting them when we detect the user is asking about a specific creator.</p>
+
+<h2>Step 1: Set Up Google Colab</h2>
+
+<p>We're using <a href="https://colab.research.google.com" target="_blank">Google Colab</a> because:</p>
+
+<ul>
+<li>No Python setup required on your machine</li>
+<li>Free to use</li>
+<li>Easy package installation</li>
+</ul>
+
+<p>Go to <a href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> and create a new notebook.</p>
+
+<h2>Step 2: Install the YouTube Transcript API</h2>
+
+<p>In the first cell, install the required package:</p>
+
+<pre>
+!pip install youtube-transcript-api
+</pre>
+
+<p>Run this cell before proceeding.</p>
+
+<h2>Step 3: Download Transcripts</h2>
+
+<p>In the second cell, paste this code:</p>
+
+<pre>
+import json
+import re
+from youtube_transcript_api import YouTubeTranscriptApi
+
+def clean_video_id(url_or_id):
+    """Extract video ID from YouTube URL"""
+    if 'youtube.com' in url_or_id or 'youtu.be' in url_or_id:
+        match = re.search(r'(?:v=|youtu\.be/)([a-zA-Z0-9_-]{11})', url_or_id)
+        return match.group(1) if match else url_or_id
+    return url_or_id
+
+def download_transcript(video_id, languages=['en']):
+    """Download transcript using the correct API"""
+    video_id = clean_video_id(video_id)
+
+    try:
+        # Create API instance
+        api = YouTubeTranscriptApi()
+
+        # Fetch transcript
+        transcript = api.fetch(video_id, languages=languages)
+
+        # Get snippets
+        snippets = transcript.snippets
+
+        # Convert to dict format
+        segments = [
+            {"text": s.text, "start": s.start, "duration": s.duration}
+            for s in snippets
+        ]
+
+        # Combine all text
+        full_text = " ".join(s.text for s in snippets)
+
+        return {
+            "video_id": video_id,
+            "url": f"https://www.youtube.com/watch?v={video_id}",
+            "language": transcript.language_code,
+            "is_generated": transcript.is_generated,
+            "segments": segments,
+            "text": full_text,
+            "char_count": len(full_text)
+        }
+
+    except Exception as e:
+        print(f"  Error: {e}")
+        return None
+
+# ========== ADD YOUR VIDEO IDs HERE ==========
+VIDEO_IDS = [
+    "X6AR2RMB5tE",  # Example: ThePrimeagen Vim tutorial
+    # Add more video IDs here...
+]
+
+# ========== DOWNLOAD ==========
+print(f"Downloading {len(VIDEO_IDS)} transcripts...\n")
+results = []
+
+for i, vid in enumerate(VIDEO_IDS, 1):
+    vid_clean = clean_video_id(vid)
+    print(f"[{i}/{len(VIDEO_IDS)}] {vid_clean}")
+
+    result = download_transcript(vid, languages=['en'])
+
+    if result:
+        # Save JSON
+        with open(f"{result['video_id']}.json", "w", encoding="utf-8") as f:
+            json.dump(result, f, indent=2, ensure_ascii=False)
+
+        # Save TXT
+        with open(f"{result['video_id']}.txt", "w", encoding="utf-8") as f:
+            f.write(f"Video: {result['url']}\n")
+            f.write(f"Language: {result['language']}\n\n")
+            f.write(result['text'])
+
+        print(f"  Success: {result['char_count']:,} characters")
+        print(f"  Saved: {result['video_id']}.json, {result['video_id']}.txt")
+        print(f"  Preview: {result['text'][:100]}...")
+        results.append(result)
+
+    print()
+
+print(f"\nComplete: {len(results)}/{len(VIDEO_IDS)} transcripts downloaded")
+</pre>
+
+<h2>Step 4: Get Your Video IDs</h2>
+
+<p>To get a video ID from YouTube:</p>
+
+<ol>
+<li>Go to any YouTube video</li>
+<li>Look at the URL: <code>https://www.youtube.com/watch?v=<b>X6AR2RMB5tE</b></code></li>
+<li>The video ID is the part after <code>v=</code></li>
+</ol>
+
+<p>Replace the VIDEO_IDS list with videos from creators you want in your advisor board:</p>
+
+<ul>
+<li>Theo Brown videos about web development</li>
+<li>ThePrimeagen videos about Vim and coding</li>
+<li>Any other tech YouTubers you follow</li>
+</ul>
+
+<h2>Step 5: Download Files from Colab</h2>
+
+<p>After running the code:</p>
+
+<ol>
+<li>Click the folder icon on the left side of Colab</li>
+<li>Find your <code>.txt</code> and <code>.json</code> files</li>
+<li>Right-click and download them</li>
+</ol>
+
+<h2>Step 6: Add Transcripts to Your Project</h2>
+
+<p>Create a transcripts folder and add your downloaded files:</p>
+
+<pre>
+ai-advisor/
+  data/
+    knowledge-base.json
+    transcripts/
+      theo.txt       <-- Add your transcripts here
+      primogen.txt
+      brian.txt
+</pre>
+
+<p>Rename the files to match the advisor names in your knowledge base.</p>
+
+<h2>Step 7: Update Your API Route</h2>
+
+<p>Modify <b>app/api/chat/route.ts</b> to inject transcripts when relevant:</p>
+
+<pre>
+import fs from "fs";
+import path from "path";
+
+// Check if user is asking about a specific advisor
+function getTranscriptForMessage(message: string): string {
+  const messageLower = message.toLowerCase();
+
+  // Check for each advisor
+  if (messageLower.includes("theo")) {
+    const transcriptPath = path.join(process.cwd(), "data/transcripts/theo.txt");
+    if (fs.existsSync(transcriptPath)) {
+      return fs.readFileSync(transcriptPath, "utf-8");
+    }
+  }
+
+  if (messageLower.includes("primo") || messageLower.includes("prime")) {
+    const transcriptPath = path.join(process.cwd(), "data/transcripts/primogen.txt");
+    if (fs.existsSync(transcriptPath)) {
+      return fs.readFileSync(transcriptPath, "utf-8");
+    }
+  }
+
+  // Add more advisors as needed
+
+  return "";
+}
+
+export async function POST(request: NextRequest) {
+  const { message } = await request.json();
+
+  // Get transcript if relevant
+  const transcript = getTranscriptForMessage(message);
+
+  // Build system prompt with transcript if available
+  const systemPrompt = `You have access to a knowledge base of coding experts.
+The experts are: ${[...new Set(knowledgeBase.map(e => e.advisor))].join(", ")}
+
+${transcript ? `Here is a transcript from the relevant expert:\n${transcript}\n\n` : ""}
+
+Here is the knowledge base:
+${JSON.stringify(knowledgeBase)}
+
+If the question is not related to coding, do not try to answer it.`;
+
+  // Continue with API call...
+}
+</pre>
+
+<h2>The Context Window Problem</h2>
+
+<p>You can't just dump unlimited text into an LLM. Every model has a <b>context window</b> - a limit on how much text it can process at once.</p>
+
+<p>For our simple implementation:</p>
+<ul>
+<li>Only inject transcripts when relevant (user mentions the advisor)</li>
+<li>Keep transcripts reasonably sized</li>
+<li>Don't try to include all transcripts at once</li>
+</ul>
+
+<p>In production, you'd use a <b>vector database</b> to only retrieve the most relevant chunks.</p>
+
+<h2>Test It!</h2>
+
+<p>Try asking questions like:</p>
+
+<ul>
+<li>"What does Theo think about Node.js?"</li>
+<li>"What's Prime's opinion on Vim?"</li>
+<li>"Tell me about Brian's views on testing"</li>
+</ul>
+
+<p>The AI should now respond using the actual content from those YouTube videos!</p>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+<li><b>Transcripts are data:</b> YouTube videos are a goldmine of expert knowledge</li>
+<li><b>RAG with real data:</b> We're now using actual expert content, not just static JSON</li>
+<li><b>Context window matters:</b> We can't dump everything in - be selective</li>
+<li><b>Information architecture:</b> How you structure and name your data matters for retrieval</li>
+</ul>
+
+<h2>Extending This</h2>
+
+<p>Ideas to make this your own:</p>
+
+<ul>
+<li>Add more creators to your advisory board</li>
+<li>Organize transcripts by topic (vim.txt, testing.txt, career.txt)</li>
+<li>Build smarter detection logic for which transcript to use</li>
+<li>Add multiple transcripts per creator</li>
+</ul>
+
+<h2>What's Next</h2>
+
+<p>Tomorrow, we'll wrap up the course by looking at a real AI product I built - a TikTok influencer finder that uses these exact same concepts at scale. You'll see how RAG and AI engineering work in production!</p>

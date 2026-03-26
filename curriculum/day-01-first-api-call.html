@@ -1,0 +1,141 @@
+<h1>Day 1: Your First AI API Call</h1>
+
+<p><b>Video:</b></p>
+[VIDEO EMBED PLACEHOLDER]
+
+<h2>What You'll Build</h2>
+
+<p>Today you'll make your first LLM API call. By the end of this lesson, you'll have a working chatbot that can respond to any message.</p>
+
+<h2>How LLM APIs Work</h2>
+
+<p>At its core, an LLM API is simple:</p>
+<ol>
+<li>You send text (a "prompt") to the API</li>
+<li>The API processes it with a large language model</li>
+<li>You get text back (the "completion")</li>
+</ol>
+
+<p>That's it! Everything else - chatbots, AI assistants, code generators - is built on top of this basic pattern.</p>
+
+<h2>Step 1: Set Up Your API Key</h2>
+
+<p>First, get your Gemini API key:</p>
+
+<ol>
+<li>Go to <b>ai.google.dev</b></li>
+<li>Click "Get API key in Google AI Studio"</li>
+<li>Sign in with your Google account</li>
+<li>Click "Create API key"</li>
+<li>Copy your new API key</li>
+</ol>
+
+<p>Create a <b>.env</b> file at the root of your project (if it doesn't exist) and add:</p>
+
+<pre>
+GEMINI_API_KEY=your_api_key_here
+</pre>
+
+<h2>Step 2: Understand the API Route</h2>
+
+
+<pre>
+// app/api/chat/route.ts
+import { NextRequest, NextResponse } from 'next/server';
+import { GoogleGenerativeAI } from '@google/generative-ai';
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+
+export async function POST(request: NextRequest) {
+  try {
+    const { message } = await request.json();
+
+    const userResponse = await model.generateContent(message);
+    const response = userResponse.response.text();
+
+    return NextResponse.json({ response });
+  } catch (error) {
+    console.error('Chat API error:', error);
+    return NextResponse.json(
+      { error: 'Failed to generate response' },
+      { status: 500 }
+    );
+  }
+}
+</pre>
+
+<p>Key points:</p>
+<ul>
+<li><b>GoogleGenerativeAI</b> - The SDK that handles authentication and API calls</li>
+<li><b>gemini-2.0-flash</b> - A fast model on the free tier (check docs for latest available models)</li>
+<li><b>generateContent()</b> - Takes your prompt and returns a response</li>
+</ul>
+
+<p><b>Important:</b> Model names change! If you're using Cursor or Claude to help you code, they might suggest models that don't exist anymore. Always check the <a href="https://ai.google.dev/gemini-api/docs/models" target="_blank">Gemini docs</a> for current models.</p>
+
+<h2>Step 3: Test It!</h2>
+
+<p>Make sure your dev server is running:</p>
+
+<pre>
+npm run dev
+</pre>
+
+<p>Open <b>http://localhost:3000</b> and try sending a message. You should see the AI respond!</p>
+
+<p>Try these prompts:</p>
+<ul>
+<li>"What is machine learning?"</li>
+<li>"Write a haiku about coding"</li>
+<li>"Explain APIs to a 5 year old"</li>
+</ul>
+
+<h2>Step 4: Look Under the Hood</h2>
+
+<p>Add some console logging to see what's actually happening:</p>
+
+<pre>
+const userResponse = await model.generateContent(message);
+console.log(JSON.stringify(userResponse.response, null, 2));
+const response = userResponse.response.text();
+</pre>
+
+<p>Check your terminal - you'll see metadata about tokens used, the formatted response, and more. This is just an API response! Nothing magical. It's another API that returns text instead of JSON.</p>
+
+<h2>Understanding What Happened</h2>
+
+<p>When you sent a message:</p>
+<ol>
+<li>The React frontend sent a POST request to <b>/api/chat</b></li>
+<li>Your API route called <b>generateContent()</b> with your message</li>
+<li>The Gemini SDK sent your message to Google's servers</li>
+<li>Gemini's model processed your text and generated a response</li>
+<li>The response traveled back through the chain to your browser</li>
+</ol>
+
+<h2>Key Takeaways</h2>
+
+<ul>
+<li>LLM APIs are simple: text in, text out</li>
+<li>The SDK handles authentication and HTTP requests for you</li>
+<li>Always handle errors - APIs can fail</li>
+<li>Check the docs for model names - they change frequently</li>
+<li>This is just another API. Don't let it feel magical.</li>
+</ul>
+
+<h2>Homework</h2>
+
+<p>Before tomorrow, look at the docs for other providers:</p>
+<ul>
+<li><a href="https://platform.openai.com/docs" target="_blank">OpenAI</a></li>
+<li><a href="https://docs.anthropic.com" target="_blank">Anthropic (Claude)</a></li>
+</ul>
+
+<p>They all work basically the same way. If you know one, you know them all.</p>
+
+<h2>What's Next</h2>
+
+<p>Right now, the AI is generic - it has no specific personality or expertise. Ask it about the weather in France and it'll happily tell you. Tomorrow, we'll fix that with <b>system prompts</b> to keep it in its lane.</p>
+
+<p>See you on Day 2!</p>
