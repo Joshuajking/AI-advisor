@@ -139,15 +139,17 @@ const response = userResponse.response.text();
 <li>This is just another API. Don't let it feel magical.</li>
 </ul>
 
-<h2>Homework (Optional)</h2>
+<h2>Challenge: Extend What You Built</h2>
 
-<p>If you want to explore, look at the docs for other providers:</p>
+<p>Don't just move on - push yourself a bit. Try one of these:</p>
+
 <ul>
-<li><a href="https://platform.openai.com/docs" target="_blank">OpenAI</a></li>
-<li><a href="https://docs.anthropic.com" target="_blank">Anthropic (Claude)</a></li>
+<li><b>Swap providers:</b> Rewrite your API route to use OpenAI or Anthropic instead of Gemini. Check out their docs - <a href="https://platform.openai.com/docs" target="_blank">OpenAI</a>, <a href="https://docs.anthropic.com" target="_blank">Anthropic</a>. You'll see they all work basically the same way.</li>
+<li><b>Add streaming:</b> Right now you wait for the full response. Can you make it stream token by token? Check Gemini's <code>generateContentStream()</code> method.</li>
+<li><b>Log everything:</b> Add detailed logging to see tokens used, response time, model version. This is what you'd need in production.</li>
 </ul>
 
-<p>They all work basically the same way. If you know one, you know them all.</p>
+<p>Pick one and do it before tomorrow. Breaking things is how you learn.</p>
 
 <h2>What's Next</h2>
 

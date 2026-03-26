@@ -219,6 +219,18 @@ const API_ENDPOINT = "/api/rag";
 
 <p>Production systems solve this with <b>embeddings</b> - we'll discuss this on Day 5.</p>
 
+<h2>Challenge: Extend What You Built</h2>
+
+<p>RAG is the most common AI pattern in production. Push yourself:</p>
+
+<ul>
+<li><b>Add your own experts:</b> Pick 2-3 people whose opinions you care about. Add their content to the knowledge base. Could be tech people, business folks, fitness gurus - whatever you're into.</li>
+<li><b>Improve the matching:</b> Our keyword matching is naive. Can you add fuzzy matching? Synonyms? What if "testing" also matched "TDD" and "unit tests"?</li>
+<li><b>Show your sources:</b> Modify the response to include which knowledge base entries were used. Users love knowing where info comes from.</li>
+</ul>
+
+<p>This is the stuff companies actually pay for. Make it your own.</p>
+
 <h2>What's Next</h2>
 
-<p>Our AI can now access knowledge, but it still just generates text. What if it could take actions? Tomorrow, we'll turn it into an <b>agent</b> that can use tools!</p>
+<p>Our AI can now access a knowledge base, but what if you want it to know what Theo said in his latest video? Or what Primeagen thinks about Vim? Tomorrow, we'll add <b>real data from YouTube transcripts</b> to make our advisory board even smarter.</p>
