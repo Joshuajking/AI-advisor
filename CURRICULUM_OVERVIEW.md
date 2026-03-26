@@ -318,7 +318,7 @@ Knowing AI systems is how you level up.
 - Applied AI Accelerator program details
 - Humans in the loop, senior engineers, guest speakers
 - Learn what companies are actually hiring for
-- Contact: brian@parity.io or LinkedIn
+- Contact: brian@parsity.io or LinkedIn
 
 ---
 

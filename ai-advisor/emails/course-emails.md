@@ -130,9 +130,9 @@ This stuff is hard to hire for. I designed the AI engineer interview process at 
 
 That's leverage. That's opportunity.
 
-If you want to go deeper, check out the **Applied AI Accelerator** at parity.io. It's where we teach the production-level stuff with actual humans in the loop - me, other senior engineers, guest speakers monthly. I don't know of any other program like it.
+If you want to go deeper, check out the **Applied AI Accelerator** at parsity.io. It's where we teach the production-level stuff with actual humans in the loop - me, other senior engineers, guest speakers monthly. I don't know of any other program like it.
 
-Either way - reach out on LinkedIn or brian@parity.io. I genuinely want to see what you build. If you've extended this, figured out how to use a vector database, or you're confused about something - let me know.
+Either way - reach out on LinkedIn or brian@parsity.io. I genuinely want to see what you build. If you've extended this, figured out how to use a vector database, or you're confused about something - let me know.
 
 Thanks for doing this with me. Now go build something.
 
