@@ -1,32 +1,173 @@
 [
-  {
-    "id": "prompting-basics",
-    "topic": "Prompt Engineering",
-    "keywords": ["prompts", "prompting", "prompt engineering", "system prompt", "instructions"],
-    "content": "The key to effective prompting is being specific about what you want. Start with a clear role (\"You are a helpful coding assistant\"), provide context about the task, give examples of desired output format, and specify any constraints. Avoid vague instructions - instead of \"be helpful\", say \"provide step-by-step explanations with code examples\"."
-  },
-  {
-    "id": "rag-intro",
-    "topic": "RAG Basics",
-    "keywords": ["rag", "retrieval", "augmented", "generation", "context", "knowledge base"],
-    "content": "RAG (Retrieval-Augmented Generation) combines search with generation. Instead of relying solely on the model's training data, you retrieve relevant documents and inject them into the prompt as context. This gives the model access to specific, up-to-date, or proprietary information. Start simple with keyword matching, then graduate to embeddings and vector databases for production."
-  },
-  {
-    "id": "agents-overview",
-    "topic": "AI Agents",
-    "keywords": ["agents", "tools", "function calling", "actions", "autonomous"],
-    "content": "AI agents extend LLMs with the ability to take actions. The model decides when to use tools based on the user's request. Common patterns include: ReAct (Reason + Act), where the model thinks through its approach before acting; tool chaining, where multiple tools are used in sequence; and planning, where the model breaks down complex tasks into steps."
-  },
-  {
-    "id": "api-best-practices",
-    "topic": "LLM API Best Practices",
-    "keywords": ["api", "rate limits", "errors", "streaming", "tokens"],
-    "content": "When working with LLM APIs: 1) Always handle errors gracefully - APIs can fail or rate limit you. 2) Use streaming for better UX on long responses. 3) Monitor token usage to control costs. 4) Cache responses when appropriate. 5) Use the smallest model that works for your use case - it's faster and cheaper."
-  },
-  {
-    "id": "gemini-tips",
-    "topic": "Gemini API",
-    "keywords": ["gemini", "google", "api key", "models", "flash", "pro"],
-    "content": "Gemini offers several models: gemini-1.5-flash is fast and cost-effective for most tasks; gemini-1.5-pro is more capable for complex reasoning. The free tier is generous for learning and prototyping. Key features include multimodal support (text, images, video) and large context windows. Get your API key at ai.google.dev."
-  }
+	{
+		"id": "primeagen-performance",
+		"topic": "Performance & Optimization",
+		"advisor": "Primeagen",
+		"keywords": [
+			"performance",
+			"optimization",
+			"speed",
+			"benchmark",
+			"profiling",
+			"slow"
+		],
+		"content": "Stop guessing and start measuring. Your intuition about performance is probably wrong. Profile first, optimize second. The fastest code is the code that doesn't run - can you eliminate the work entirely? And for the love of all that is holy, stop premature optimization. Make it work, make it right, then make it fast. In that order."
+	},
+	{
+		"id": "primeagen-vim-workflow",
+		"topic": "Developer Workflow",
+		"advisor": "Primeagen",
+		"keywords": [
+			"workflow",
+			"productivity",
+			"vim",
+			"editor",
+			"terminal",
+			"efficiency",
+			"tools"
+		],
+		"content": "Your tools should be invisible. Learn your editor deeply - not because vim is objectively better (it is), but because mastering your tools means thinking about code, not about how to edit it. Every time you reach for the mouse, you're context switching. Keep your hands on the keyboard. Automate the boring stuff. Your time is valuable."
+	},
+	{
+		"id": "primeagen-fundamentals",
+		"topic": "Learning Fundamentals",
+		"advisor": "Primeagen",
+		"keywords": [
+			"learning",
+			"fundamentals",
+			"basics",
+			"algorithms",
+			"data structures",
+			"cs"
+		],
+		"content": "Frameworks come and go. Fundamentals are forever. You don't need to know advanced algorithms for most work, but understanding Big O, how hash maps work, and when to use what data structure will make you better than 90% of developers. Stop tutorial hell. Build stuff. Break stuff. Learn by doing."
+	},
+	{
+		"id": "theo-typescript",
+		"topic": "TypeScript Best Practices",
+		"advisor": "Theo",
+		"keywords": [
+			"typescript",
+			"types",
+			"type safety",
+			"interfaces",
+			"generics",
+			"any"
+		],
+		"content": "If you're using 'any', you're doing it wrong. TypeScript is not 'JavaScript with extra steps' - it's your documentation, your tests, and your safety net all in one. Inference is magic, but explicit types at boundaries make your intent clear. And please, stop fighting the compiler. It's trying to help you. Your future self will thank you."
+	},
+	{
+		"id": "theo-modern-web",
+		"topic": "Modern Web Development",
+		"advisor": "Theo",
+		"keywords": [
+			"web dev",
+			"nextjs",
+			"react",
+			"framework",
+			"ssr",
+			"client server",
+			"full stack"
+		],
+		"content": "Ship fast, ship often. Use frameworks that give you the pit of success - Next.js App Router, tRPC, Prisma. These aren't just trendy, they solve real problems. Server components are not optional anymore. Stop shipping megabytes of JavaScript to the client. Your users are on mobile with spotty connections. Respect their bandwidth and their time."
+	},
+	{
+		"id": "theo-dx-matters",
+		"topic": "Developer Experience",
+		"advisor": "Theo",
+		"keywords": [
+			"dx",
+			"developer experience",
+			"tooling",
+			"setup",
+			"config",
+			"getting started"
+		],
+		"content": "Developer experience matters. A lot. If setting up your project requires more than 'npm install && npm run dev', you've already lost. Good DX means fast feedback loops, clear error messages, and tools that get out of your way. Invest in your build pipeline, your linting, your testing setup. A happy developer is a productive developer."
+	},
+	{
+		"id": "brian-practical",
+		"topic": "Practical Coding",
+		"advisor": "Brian Jenney",
+		"keywords": [
+			"practical",
+			"pragmatic",
+			"shipping",
+			"mvp",
+			"scope",
+			"deadlines",
+			"done"
+		],
+		"content": "Perfect is the enemy of done. Your job is to ship value, not write perfect code. That doesn't mean write garbage - it means make conscious tradeoffs. Sometimes the hacky solution is the right solution. Document why you made the choice, add a TODO if needed, and move on. You can always refactor when it actually becomes a problem."
+	},
+	{
+		"id": "brian-testing",
+		"topic": "Testing Strategy",
+		"advisor": "Brian Jenney",
+		"keywords": [
+			"testing",
+			"tests",
+			"tdd",
+			"unit tests",
+			"integration",
+			"e2e",
+			"quality"
+		],
+		"content": "Test what matters. Not everything needs 100% coverage. Focus on business logic, edge cases, and the paths users actually take. Integration tests give you more bang for your buck than unit tests. E2E tests are expensive but catch real bugs. Don't test implementation details - test behavior. And if you're constantly fixing broken tests, you're testing the wrong things."
+	},
+	{
+		"id": "brian-debugging",
+		"topic": "Debugging Approach",
+		"advisor": "Brian Jenney",
+		"keywords": [
+			"debugging",
+			"bugs",
+			"errors",
+			"troubleshooting",
+			"console",
+			"logs"
+		],
+		"content": "Debugging is a skill. Start with the error message - actually read it. Reproduce the bug consistently. Use the debugger, not just console.logs everywhere. Binary search your problem - comment out half the code, see if it breaks. Check your assumptions - one of them is wrong. And when you fix it, understand WHY it was broken. That's how you get better."
+	},
+	{
+		"id": "primeagen-complexity",
+		"topic": "Managing Complexity",
+		"advisor": "Primeagen",
+		"keywords": [
+			"complexity",
+			"architecture",
+			"simple",
+			"over engineering",
+			"abstractions"
+		],
+		"content": "Complexity is the mind killer. Every abstraction you add is a bet that you'll need it. Most of those bets lose. Write boring code. Copy-paste is not always evil - sometimes three similar functions is better than one configurable abstraction. YAGNI is real. Build for today's requirements, not tomorrow's hypotheticals."
+	},
+	{
+		"id": "theo-deployment",
+		"topic": "Deployment & Infrastructure",
+		"advisor": "Theo",
+		"keywords": [
+			"deployment",
+			"hosting",
+			"vercel",
+			"infrastructure",
+			"ci cd",
+			"production"
+		],
+		"content": "Deployment should be boring. Use platforms that handle the hard stuff - Vercel, Railway, Fly.io. Don't build your own Kubernetes cluster for your side project. Set up CI/CD from day one. Automate deploys. Preview deployments are not optional. If deploying scares you, you're not deploying enough. Deploy on Fridays. Be bold."
+	},
+	{
+		"id": "brian-code-review",
+		"topic": "Code Review Culture",
+		"advisor": "Brian Jenney",
+		"keywords": [
+			"code review",
+			"pr",
+			"pull request",
+			"feedback",
+			"team",
+			"collaboration"
+		],
+		"content": "Code reviews are about knowledge sharing, not finding mistakes. Ask questions, don't demand changes. Explain the 'why' behind your suggestions. Automate the nitpicks - let prettier and eslint handle formatting. Approve fast, iterate fast. A PR open for days helps nobody. And remember: you're reviewing code, not judging the person."
+	}
 ]
