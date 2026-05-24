@@ -27,6 +27,7 @@ export default function Home() {
 
       const data = await res.json();
       setResponse(data.response || "ERROR");
+      setInput("");
     } catch (error) {
       setResponse("ERROR: " + error);
     } finally {
