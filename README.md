@@ -8,6 +8,26 @@ API route. The long-term goal is to turn it into a practical RAG system that can
 ingest source material, embed it, retrieve relevant context, and answer questions
 with citations.
 
+## Project Origin
+
+This repository began from a small AI advisor starter project used to learn the
+basics of Next.js API routes, React state, and Gemini API integration.
+
+The original scaffold provided the initial chat UI, starter API route, and sample
+advisor data. I am keeping that history visible because it is part of the
+project's origin and I do not want to present starter code as if it were written
+from scratch.
+
+My work is focused on evolving the scaffold into a more complete RAG application:
+designing the retrieval architecture, replacing static JSON context with a real
+document pipeline, adding source traceability, and exploring a production-style
+stack around Postgres, pgvector, object storage, and local AI processing.
+
+In other words, this project is not meant to demonstrate that the first chat
+interface was built entirely from scratch. It is meant to demonstrate how a
+starter AI app can be understood, reshaped, extended, and turned into a more
+serious retrieval-backed system.
+
 ## Project Goals
 
 - Build a working AI chat interface with Next.js.
