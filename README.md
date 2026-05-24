@@ -1,20 +1,43 @@
-# 5-Day AI Email Course
+# AI Advisor
 
-A beginner-friendly email course where developers build an AI advisor system progressively.
+AI Advisor is a learning project for building a real Retrieval-Augmented Generation
+(RAG) application.
 
-## What You'll Learn
+The current app is a small Next.js chat interface backed by a server-side Gemini
+API route. The long-term goal is to turn it into a practical RAG system that can
+ingest source material, embed it, retrieve relevant context, and answer questions
+with citations.
 
-- **Day 1**: Make your first LLM API call with Gemini
-- **Day 2**: Master prompting with system prompts and personas
-- **Day 3**: Build simple RAG (Retrieval-Augmented Generation)
-- **Day 4**: Create an AI agent with tool usage
-- **Day 5**: Understand production concepts and next steps
+## Project Goals
+
+- Build a working AI chat interface with Next.js.
+- Keep model/API keys on the server side.
+- Add system prompts for role, tone, and guardrails.
+- Replace static JSON context with a real RAG pipeline.
+- Use Postgres with pgvector for local vector search.
+- Store source documents, transcripts, and media references for traceability.
+
+## Planned RAG Architecture
+
+```text
+source documents / transcripts / web pages
+  -> clean and normalize text
+  -> split text into chunks
+  -> create embeddings
+  -> store chunks and vectors
+  -> retrieve relevant chunks for each user question
+  -> send context + question to the LLM
+  -> return an answer with source references
+```
 
 ## Project Structure
 
-```
-ai-advisor/          # Next.js starter project (what students build)
-curriculum/          # HTML course content (gitignored, for Kajabi)
+```text
+ai-advisor/                 Next.js app
+  app/page.tsx              Browser chat UI
+  app/api/chat/route.ts     Server-side chat endpoint
+  data/                     Starter knowledge/transcript data
+scripts/                    Utility scripts
 ```
 
 ## Getting Started
@@ -23,12 +46,42 @@ curriculum/          # HTML course content (gitignored, for Kajabi)
 cd ai-advisor
 npm install
 cp .env.example .env.local
-# Add your Gemini API key to .env.local
 npm run dev
 ```
 
-## Tech Stack
+Add your Gemini API key to:
 
-- **LLM**: Gemini API (free tier, gemini-1.5-flash)
-- **Framework**: Next.js 15 with App Router
-- **Language**: TypeScript
+```text
+ai-advisor/.env.local
+```
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+Then open:
+
+```text
+http://localhost:3000
+```
+
+## Current Stack
+
+- Next.js
+- React
+- TypeScript
+- Gemini API
+
+## Intended Stack
+
+- Postgres
+- pgvector
+- Prisma
+- MinIO or S3-compatible object storage
+- Local document ingestion and embedding pipeline
+
+## Status
+
+This project is early-stage. The current focus is understanding the request flow
+from the React UI to the backend API route, then evolving that route into a real
+RAG-backed advisor.
